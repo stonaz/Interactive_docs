@@ -1,0 +1,50 @@
+{% extends "services/base.html" %}
+    
+      {% load static %}
+
+    {% block content %}
+
+    <div class="avv-sidebar">
+  <h3>Hosts</h3>
+       {% if host_list %}
+    <ul class="list-group">
+    {% for host in host_list %}
+        {% if host.name == server.name %}
+      <li class="list-group-item"><a href="{% url 'host_detail' host.id %}"><span class="activeItem">{{ host.name }}</span></a></li>
+      {% else %}
+        <li class="list-group-item"><a href="{% url 'host_detail' host.id %}">{{ host.name }}</a></li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No hosts are available.</p>
+{% endif %}
+    </div>
+  </div>
+  <div class="col-md-8">
+    
+     <div class="avv-content">
+        <strong>Nome: </strong>{{ server.name }}<br>
+        <strong>Indirizzo: </strong>{{ server.IP }}<br>
+                <textarea readonly rows="4" cols="60" class="formControl desc">{{ server.desc }}</textarea>
+
+    <br>
+        <strong>Note: </strong>{{ server.note }}<br><br>
+        <strong>Servizi: </strong>{% for service in service_list %}
+        {% if service.id == "not present" %}
+    {{ service.name }},
+    {% else %}
+    <a href="{% url 'service_detail' service.id %}">{{ service.name }}</a>,
+    {% endif %}
+{% endfor %}<br><br>
+
+    </div>
+
+    <div>
+  
+    </div>
+
+  </div>
+</div>
+    </div>
+  {% endblock %}

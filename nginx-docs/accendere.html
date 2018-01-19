@@ -1,0 +1,166 @@
+<html>
+<head>
+	<meta charset="UTF-8"> 
+<link rel='stylesheet'   href='/css/doc.css' type='text/css'/>
+</head>
+<body>
+	<div class="header-fixed">
+		<div style="float: left">
+			<a href="https://documentazione.ads.it"><button>Home Documentazione</button></a><br>
+			<a href="javascript: history.go(-1)"><button>Pagina precedente</button></a>
+		</div>
+<h1 align='center'> Sequenza startup generale dei sistemi Avvocatura </h1>
+
+</div>
+	<div class="container">
+<h2> Introduzione </h2>
+Al fine di provvedere allo startup dei sistemi &egrave necessario procedere obbligatoriamente con il seguente ordine.<br>
+<ol>
+	<li> <a href='#Simplivity'>Accensione Simplivity</a>
+	<li> <a href='#NAS'>Accensione NAS</a>
+	<li> <a href='#Oracle'>Accensione Oracle</a>
+	<li> <a href='#Postgres'>Accensione Postgres</a>
+	<li> <a href='#Alfresco'>Accensione Alfresco</a>
+	<li> <a href='#TOMCAT'>Accensione  Cas ( cas.ads.it )</a>
+	<li> <a href='#NSIWS'>Accensione Web services NSI ( nsi-ws.ads.it )</a>
+	<li> <a href='#Console-PEC'>Accensione Console-PEC ( console-pec.ads.it )</a>
+	<li> <a href='#JBOSS'>Accensione Scrivania ( scrivania.ads.it )</a>
+	<li> <a href='#JBOSS'>Accensione Servizi Stampa NSI ( prasae.ads.it )</a>
+	<li> <a href='#PDD'>Accensione PDD</a>
+	<li> <a href='#PDD-QUA'>Accensione PDD Qualificata</a>
+	<li> <a href='#JBOSS'>Accensione Addressbook (addressbook.ads.it )</a>
+	<li> <a href='#JBOSS'>Accensione Extranet ( extranet.ads.it )</a>	
+	<li> <a href='#MASSIVA'>Accensione Scansione Massiva ( massiva.ads.it )</a>
+	<li> <a href='#JBOSS'>Accensione Concorsi ( concorsi.ads.it )</a>
+	<li> <a href='#NSI'>Accensione Servers NSI</a>
+		
+</ol>
+<br>
+<h2> <a class="anchor" name='Simplivity'>Accensione Simplivity</a> </h2>
+Accendere il server fisico che ospita il Vcenter <strong>(vc55-simpl.ads.it)</strong><br>
+Accedere al Vcenter VMware e da lì dare Power On ai 2 servers <strong>simplivity1</strong> e <strong>simplivity2</strong><br>
+<img src="/imgs/poweronHOST.png" width="960" height="600"><br><br>
+Attendere che gli host Simplivity siano accesi, e successivamente accendere i servers <strong>OmniCube</strong><br>
+<img src="/imgs/poweronOC.png" width="960" height="600"><br><br>
+Attendere che tutte le VM siano connesse ed in stato di Power OFF.
+A quel punto sarà possibile iniziare ad accendere i sistemi.<br><br>
+
+<h2> <a class="anchor" name='NAS'>Accensione NAS</a> </h2>
+Accendere il NAS
+<br><br>
+<h2> <a class="anchor" name='TOMCAT'>Accensione CAS</a> </h2>
+Dal Vcenter VMware eseguire il Power on della VM <strong>cas.ads.it</strong>. I servizi sul server partono in automatico.<br>
+
+<br>
+<br>
+<h2> <a class="anchor" name='Oracle'>Accensione DB Oracle</a> </h2>
+<strong>1)</strong> Dal Vcenter VMware eseguire il Power On del server <strong>dbserver-stdby.ads.it</strong><br>
+Accedere al server come user oracle<br>
+
+<p><code>
+	lsnrctl start<br>
+	/home/oracle/scripts/startAVGE.sh<br>
+	/home/oracle/scripts/startALFRESCO.sh<br>
+</code></p>
+Attendere qualche minuto e controllare che I DB si siano registrati sul listener 
+<p><code>
+	lsnrctl status<br>
+</code></p>
+<strong>2)</strong> Accendere il server fisico <strong>dbserver.ads.it</strong>.<br>
+Tutti i servizi partono in automatico<br>
+<strong>3)</strong> Dal Vcenter VMware eseguire il Power On del server <strong>dbserver-repl1.ads.it</strong><br>
+Tutti i servizi partono in automatico
+<br><br>
+	
+<h2> <a class="anchor" name='Alfresco'>Accensione Alfresco</a> </h2>
+Dal Vcenter VMware eseguire il Power On del server <strong>botero-2.ads.it</strong>
+Attendere un minuto <br>
+Dal Vcenter VMware eseguire il Power On del server <strong>botero-1.ads.it</strong>
+<br>
+<br>
+<h2> <a class="anchor" name='Postgres'>Accensione DB Postgres</a> </h2>
+Eseguire il Power on della VM <strong>postgres.ads.it</strong><br>
+I servizi sul server partono in automatico.<br>
+Va controllato che la directory con le PEC sia correttamente montata sotto /pec:
+<p><code>
+	df -h <br>
+	Filesystem                     Size  Used Avail Use% Mounted on <br>
+	/dev/mapper/postgres--vg-root  737G  460G  245G  66% / <br>
+	udev                           4.9G  4.0K  4.9G   1% /dev <br>
+	tmpfs                         1001M  316K 1000M   1% /run <br>
+	none                           5.0M     0  5.0M   0% /run/lock <br>
+	none                           4.9G     0  4.9G   0% /run/shm <br>
+	/dev/sda1                      228M   59M  157M  28% /boot <br>
+	/dev/mapper/backup--vg-backup  985G  275G  664G  30% /backup <br>
+	/dev/sdg1                      4.9T  2.7T  2.0T  57% /pec <br>
+</code></p>
+								
+<br>
+
+<h2> <a class="anchor" name='PDD'>Accensione PDD</a> </h2>
+
+Dal Vcenter VMware eseguire il Power On del server <strong>avvjboss1-prod.ads.it</strong><br>
+Attendere 10 minuti<br>
+Dal Vcenter VMware eseguire il Power On del server <strong>avvjboss2-prod.ads.it</strong><br>
+<br><br>
+<h2> <a class="anchor" name='PDD-QUA'>Accensione PDD Qualificata</a> </h2>
+Dal Vcenter VMware eseguire il Power On del server <strong>avvjboss1-qua.ads.it</strong><br>
+Attendere 10 minuti<br>
+Dal Vcenter VMware eseguire il Power On del server <strong>avvjboss2-qua.ads.it</strong><br>
+<br><br>
+<h2> <a class="anchor" name='Console-PEC'>Accensione Console-PEC</a> </h2>
+Accedere al server <strong>dbserver.ads.it</strong> come utente oracle e Controllare che il file re-enable.sql sia stato creato.
+<p>
+<code>
+cd /opt/oracle/scripts/avge10g/console-pec<br>
+ls -ltr<br>
+-rwxr--r-- 1 oracle oinstall  99 Oct 29 16:15 disable.sh<br>
+-rwxr--r-- 1 oracle oinstall  45 Oct 29 16:15 enable.sh<br>
+-rw-r--r-- 1 oracle oinstall 370 Nov  2 12:36 disable.sql<br>
+-rw-r--r-- 1 oracle oinstall 154 Nov  2 12:36 enable.sql<br>
+-rw-r--r-- 1 oracle oinstall 304 Nov  2 12:44 re-enable.sql<br>
+</code>
+Se il file <strong>re-enable.sql</strong> esiste digitare:
+<p><code>
+	./enable.sh
+</code></p><br><br>
+Dal Vcenter VMware eseguire il Power On del server <strong>console-pec.ads.it</strong><br>
+Tutti i servizi partono in automatico
+
+<h2> <a class="anchor" name='JBOSS'>Accensione servers con Jboss installato come servizio</a> </h2>
+Procedura da usare sui servers:
+<ul>
+	<li> <strong>concorsi.ads.it</strong>
+	<li> <strong>scrivania.ads.it</strong>
+	<li> <strong>extranet.ads.it</strong>
+	<li> <strong>prasae.ads.it</strong>
+	<li><strong>addressbook.ads.it</strong>
+	
+</ul>
+Dal Vcenter VMware eseguire il Power On del server .<br>
+Tutti i servizi partono in automatico
+<br><br>
+<h2> <a class="anchor" name='NSIWS'>Accensione Web Services NSI</a> </h2>
+Dal Vcenter VMware eseguire il Power On del server <strong>nsi-ws.ads.it</strong><br>
+Tutti i servizi partono in automatico
+<br><br>
+
+<h2> <a class="anchor" name='MASSIVA'>Accensione Scansione Massiva</a> </h2>
+Dal Vcenter VMware eseguire il Power on della VM <strong>massiva.ads.it</strong>.<br>
+Accedere al server come utente massiva<br>
+<p><code>
+	cd /home/massiva/AcquisizioneMassiva/trunk/deploy/run<br>
+	./run<br>
+</code>
+	
+</p>
+<br>
+
+<h2> <a class="anchor" name='NSI'>Accensione dei servers NSI</a> </h2>
+Per accendere i servers NSI, dal Vcenter VMware eseguire il Power On di tutti i servers delle distrettuali.<br>
+I servizi partono i automatico
+<br>
+</div>
+
+</body>
+</html>

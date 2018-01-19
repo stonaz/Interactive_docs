@@ -1,0 +1,51 @@
+{% extends "services/base.html" %}
+    
+      {% load static %}
+
+{% block col-left %}               
+  <div class="col-md-7 ">
+    {% endblock col-left%}
+    
+        
+    {% block menu %}
+    <h4>Documentazione interdipendenze hosts e servizi</h4>
+        <ul class="nav">
+        {% if user.is_authenticated and not user.is_superuser%}
+  <li role="presentation" id="hosts">
+     <a href="{% url 'hosts_index'  %}"  >Vedi hosts</a>
+  </li>
+    <li role="presentation" id="services">
+     <a href="{% url 'servizi_index'  %}"  >Vedi servizi</a>
+  </li>
+    {% endif %}
+    {% if user.is_superuser %}
+        
+      <li role="presentation" id="hosts_mgt">
+     <a href="{% url 'host_add'  %}"  >Gestione hosts</a>
+  </li>
+        <li role="presentation" id="service_mgt">
+     <a href="{% url 'service_add'  %}"  >Gestione servizi</a>
+  </li>
+     {% endif %}
+</ul>
+       
+        
+    {% if user.is_authenticated %}
+      
+       <h4>Documentazione start/stop dei sistemi</h4>
+        <ul class="nav">
+        
+      <li role="presentation" id="hosts_mgt">
+     <a href="https://documentazione.ads.it/docs/accendere.html" >Accensione</a>
+  </li>
+        <li role="presentation" id="service_mgt">
+     <a href="https://documentazione.ads.it/docs/spegnere.html" >Spegnimento</a>
+  </li>
+        </ul>
+        
+      <h4>Documentazione procedure di Disaster Recovery</h4>
+        
+     {% endif %}
+
+{% endblock menu%}
+ 

@@ -1,0 +1,67 @@
+<html>
+<head>
+	<meta charset="UTF-8"> 
+<link rel='stylesheet'   href='https://documentazione.ads.it/css/doc.css' type='text/css'/>
+</head>
+<body>
+	<div class="header-fixed">
+		<div style="float: left">
+			<a href="https://documentazione.ads.it"><button>Home Documentazione</button></a><br>
+		</div>
+		<div style="float: right">
+			<a href="javascript: history.go(-1)"><button>Pagina precedente</button></a>
+		</div>
+		<h1 align='center'> Alfresco OCR Batch </h1>
+	</div>
+
+<div class="container">
+
+<h2> 1. Descrizione e Scopo </h2>
+Questo servizio è dedicato alla trasformazione dei pdf che provengono da scansioni in modo tale che sia selezionabile il testo. Per fare questo il servizio utilizza il sistema di OCR "Recongition Server" della ABBYY installato ed operativo su boccaccio.ads.it. 
+<p>
+L'attività viene eseguita effettuando una serie di controlli. Dettagliamo il flusso nel seguito:
+<ol>
+<li> Vengono individuati i documenti da processare. Per fare questo si selezionano i documenti che ne sistema documentale Alfresco hanno il metadato "needOCR" a true. La selezione di questi documenti avviene mediante una select diretta sul database di alfresco SENZA passare per la ricerca documentale via SOLR. Questa scelta poco ortodossa si giustifica con scarsa affidabilità e performance dell'inidicizzatore SOLR.
+<li> Per ogni documento individuato al passo 1 viene controllato se si tratta di un documento pdf firmato digitalmente (firma PADES) se si viene scartato ed il suo stato nel repository documentale viene modificato mettendo needOCR a false e isSigned a true;
+<li> Il documento viene messo con "needOCR" a false prima di procedere in modo da essere certo di non selezionarlo di nuovo indipendentemente dalle prestazioni del OCR. 
+<li> il documento viene copiato sul server OCR
+<li> il documento viene prelevato, elaborato, dal server OCR
+<li> Si procede a sostituire il contenuto documentale in Alfresco con il nuovo pdf e a ricalcolare la sua impronta documentale. Se il file si riferisce ad un protocollo che non è del giorno corrente la versione originale viene salvata, con il nome uuid.pdf, nella cartella /gfs2/orginali della macchina botero-2.ads.it. Questo salvataggio è necessario per conservare la correttezza delle impronte informatiche che sono state conservate nel Registro Giornaliero Ufficiale di Protocollo.
+</ol>
+ <h2> 2. Startup <a class="anchor" name='startup'/> </h2>
+ Accedere alla macchina mediante l'utente alfsync.
+ <code> 
+ > ps -eaf | grep AlfrescoOCR <br>
+ # se non appaiono processi: <br>
+ 	> cd AlfrescoOCR/trunk/deploy <br>
+ 	> rm -f resources/.lock <br>
+ 	> rm -f console.log <br>
+ 	> ./run & <br>
+ 	> tail -f console.pec #Per controllare che il servizio parte e funiona correttamente<br>
+ 	^C
+ </code>
+
+ <h2> 3. Shutdown <a class="anchor" name='shutdown'/> </h2>
+ Per spegnere è necessario killare il processo di AlfrescoOCR:
+ <code> 
+ > ps -eaf | grep AlfrescoOCR # Copiare il PID<br>
+ > kill $PID <br>
+ # Se non termina entro 30 secondi <br>
+ 	> kill -9 $PID <br>
+ </code>
+
+ <h2> 4. Deploy <a class="anchor" name='deploy'/> </h2>
+ Accesso come alfsync:
+ <code> 
+ > cd Alfresco/withFTP <br>
+ > svn up< br>
+ > ant <br>
+ > cp AlfrescoOCR.jar ../trunk/deploy <br>
+ </code>
+
+ <h2>5. Throubleshooting</h2>
+ 	TBD
+</div>
+
+</body>
+</html>

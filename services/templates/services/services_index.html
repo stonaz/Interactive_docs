@@ -1,0 +1,32 @@
+{% extends "services/base.html" %}
+    
+      {% load static %}
+
+    {% block content %}
+
+   
+    <h3>Servizi</h3>
+     <div class="avv-sidebar">
+       {% if services_list %}
+    <ul class="list-group">
+    {% for service in services_list %}
+        <li class="list-group-item"><a href="graph/{{ service.id }}/">{{ service.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No services are available.</p>
+{% endif %}
+     </div>
+  </div>
+  <div class="col-md-8">
+    
+    <div class="avv-content">
+        <p> Selezionare uno dei servizi dalla lista per visualizzarne la descrizione e le dipendenze</p>
+      
+    </div>
+    
+    
+  </div>
+</div>
+    </div>
+ {% endblock %}

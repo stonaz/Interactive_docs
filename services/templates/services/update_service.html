@@ -1,0 +1,176 @@
+{% extends "services/base_service_mgmt.html" %}
+      {% load static %}
+
+    {% block content %}
+  <div class="col-md-8 ">
+   
+    <div class="avv-content  ">
+<button class="btn activeItem">{{service_selected.name}}</button>     
+
+{% if message %}<h4 class="text-success""><strong>{{ message }}</strong></h4>{% endif %}
+
+<form class="form-horizontal" action="{% url 'service_update' service_selected.id %}" method="post">
+  {% csrf_token %}
+ <div class="form-group">
+<div class="col-sm-1 col-sm-offset-7">
+      <button type="submit" data-toggle="tooltip" data-placement="top" title="Modifica servizio"  class="btn btn-lg btn-default"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> </button>
+      <br><br>
+    </div>
+</div>
+ <div class="form-group">
+<label for="name" class="col-sm-2 control-label">Nome</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" id="name" name="name"  value="{{service_selected.name}}" >
+    </div>
+</div>
+<div class="form-group">
+<label for="name" class="col-sm-2 control-label">Tipo</label>
+    <div class="col-sm-6">
+      <select class="form-control"  name="service_type">
+<option  value = "" selected></option>
+                
+{% for tipo in tipi_servizio %}
+<option  value={{tipo}} {% if service_selected.service_type == tipo %} selected {% endif %}> {{tipo}}
+</option>
+{% endfor %}
+      </select>
+    </div>
+</div>
+ <div class="form-group">
+<label for="name" class="col-sm-2 control-label">Descrizione</label>
+    <div class="col-sm-6">
+            <textarea class="form-control" id="desc" name="desc" >{{service_selected.desc}}</textarea>
+    </div>
+</div>
+ <div class="form-group">
+<label for="documentation_url" class="col-sm-2 control-label">URL doc</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" id="documentation_url" name="documentation_url"  value="{{service_selected.documentation_url}}" >
+    </div>
+</div>
+ <div class="form-group">
+<label for="name" class="col-sm-2 control-label">Host</label>
+    <div class="col-sm-6">
+      <select class="form-control"  name="host">
+        <option  value = "" selected></option>
+                
+{% for host in host_list %}
+<option  value={{host.name}} {% if service_selected.host == host.name %} selected {% endif %}> {{host.name}}
+</option>
+{% endfor %}
+      </select>
+    </div>
+</div>
+ <div class="form-group">
+<label for="port" class="col-sm-2 control-label">Port</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" id="port" name="port"  value="{{service_selected.port}}" >
+    </div>
+</div>
+ <div class="form-group">
+<label for="svn" class="col-sm-2 control-label">SVN</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" id="svn" name="svn"  value="{{service_selected.svn}}" >
+    </div>
+</div>
+ <div class="form-group">
+<label for="deploy" class="col-sm-2 control-label">Documentazione Deploy</label>
+    <div class="col-sm-6">
+      <textarea class="form-control" id="deploy" name="deploy" >{{service_selected.deploy}}</textarea>
+    </div>
+       <div class="col-sm-2">
+        Formato
+      <select class="form-control"  name="deploy_doc_type">
+<option  value = "" selected></option>
+                
+{% for tipo in tipi_documentazione %}
+<option  value={{tipo}}  {% if service_selected.deploy_doc_type == tipo %} selected {% endif %}> {{tipo}}
+</option>
+{% endfor %}
+      </select>
+    </div>
+</div>
+ <div class="form-group">
+<label for="user" class="col-sm-2 control-label">User</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" id="user" name="user"  value="{{service_selected.user}}" >
+    </div>
+</div>
+<div class="form-group">
+<label for="password" class="col-sm-2 control-label">Password</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" id="password" name="password"  value="{{service_selected.password}}" >
+    </div>
+</div>
+ <div class="form-group">
+<label for="start" class="col-sm-2 control-label">Documentazione Start</label>
+    <div class="col-sm-6">
+      <textarea class="form-control" id="start" name="start"  >{{service_selected.stop}}</textarea>
+    </div>
+    <div class="col-sm-2">
+      Formato
+      <select class="form-control"  name="start_doc_type">
+<option  value = "" selected></option>
+                
+{% for tipo in tipi_documentazione %}
+<option  value={{tipo}} {% if service_selected.start_doc_type == tipo %} selected {% endif %}> {{tipo}}
+</option>
+{% endfor %}
+      </select>
+    </div>
+</div>
+ <div class="form-group">
+<label for="stop" class="col-sm-2 control-label">Documentazione Stop</label>
+    <div class="col-sm-6">
+      <textarea class="form-control" id="stop" name="stop"   >{{service_selected.start}}</textarea>
+    </div>
+        <div class="col-sm-2">
+          Formato
+      <select class="form-control"  name="stop_doc_type">
+<option  value = "" selected></option>
+                
+{% for tipo in tipi_documentazione %}
+<option  value={{tipo}}  {% if service_selected.stop_doc_type == tipo %} selected {% endif %}> {{tipo}}
+</option>
+{% endfor %}
+      </select>
+    </div>
+</div>
+ 
+ <div class="form-group">
+<label for="deps_by" class="col-sm-2 control-label">Dipendenze</label>   
+ 
+    <div class="col-sm-3">
+        <strong>Servizi da cui dipende</strong>
+            <select class="form-control" multiple name="deps_by" size="15">
+                <option  value="">Nessuno</option>  
+                {% for service in service_deps_by_list %}
+                <option  value={{service.name}} {% if service.selected %} selected {% endif %}> {{service.name}}
+                </option>
+{% endfor %}
+            </select>
+       
+    </div>
+    <div class="col-sm-3">
+          <strong>Servizi dipendenti</strong>
+            <select class="form-control" multiple name="deps_to" size="15">
+                <option  value="">Nessuno</option>  
+                {% for service in service_deps_to_list %}
+                <option  value={{service.name}} {% if service.selected %} selected {% endif %}> {{service.name}}
+                </option>
+{% endfor %}
+            </select>
+       
+    </div>
+</div>
+ <div class="form-group">
+ <div class="col-sm-1 col-sm-offset-7">
+      <button type="submit" data-toggle="tooltip" data-placement="top" title="Modifica servizio" class="btn btn-lg btn-default"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> </button>
+      <br>
+    </div> 
+  </div>  
+</form>
+
+</div>
+    </div>
+  {% endblock %}

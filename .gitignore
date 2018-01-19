@@ -1,0 +1,11 @@
+*.pyc
+*.png
+runserver
+RUN
+settings.py
+settings_deployment.py
+python
+./static
+*.dot
+/static
+/logs

@@ -1,0 +1,102 @@
+.navbar-brand>img {
+  padding: 0px ;
+}
+.imageBox{
+    border: thin solid;
+    margin-top: 5px;
+    padding: 5px;
+}
+
+.activeItem{
+    font-size: larger;
+    font-weight: bold;
+    background-color: rgb(51, 122, 183);
+    color: white;
+    padding:5px;
+}
+
+.avv-login{
+    background-color: #339966;
+    padding:5px;
+    margin:50px;
+}
+
+.avv-content{
+    background-color: #F2F2F2;
+    padding:5px;
+    line-height: 1.7;
+}
+
+.avv-sidebar{
+    /*background-color: #CCCCCC;*/
+    
+}
+
+.avv-sidebar-servizi{
+    /*background-color: #CCCCCC;*/
+    overflow: auto;
+    max-height: 700px;
+}
+
+.auth{
+    float: right;
+    /*text-decoration: underline;*/
+    padding:3px;
+    margin:3px;
+    font-weight:bold;
+    /*background-color: #CCCCCC;*/
+}
+
+.menu{
+    
+    /*text-decoration: underline;*/
+    padding:3px;
+    margin:3px;
+    font-weight:bold;
+}
+
+.menu a {
+    text-decoration:none;
+}
+
+.code {
+    background: #000;
+    color: white;
+    font-family: monospace;
+    display: block;
+    padding: 5px;
+    border-radius: 5px;
+    width: 50%;
+}
+
+code {
+    background: #000;
+    color: white;
+    font-family: monospace;
+    display: block;
+    padding: 5px;
+    border-radius: 5px;
+    width: 50%;
+}
+
+.desc {
+    background: #ffffcc;
+    color: black;
+    /*font-family: monospace;*/
+    display: block;
+    padding: 5px;
+    border-radius: 5px;
+    width: 50%;
+    line-height: 16px;
+padding-left: 13px;
+}
+
+.sezioni_home{
+  clear: both;
+  margin-top: 5px;
+}
+
+
+.white{
+    background-color: #FFFFFF;
+}

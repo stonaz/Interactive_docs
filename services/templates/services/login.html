@@ -1,0 +1,66 @@
+{% extends "services/base.html" %}
+    
+      {% load static %}
+{% block col-left %}               
+  <div class="col-md-7 ">
+    {% endblock col-left%}
+        
+    {% block menu %} 
+        
+{% endblock menu%}
+    {% block content %}
+      <div><h4>In queste pagine è ospitata la documentazione dei sistemi informatici dell'Avvocatura,
+      suddivisa nelle seguenti 3 sezioni:</h4></div>
+      <br>
+      <div class="sezioni_home">
+        <strong>Documentazione dinamica delle dipendenze tra hosts e servizi</strong><br>
+        <img width=40%  style="float: right" alt="logo" src="{% static "avvocatura/images/Postgres-DB_deps_down.png" %}">
+        Le interdipendenze tra gli host e i servizi che ospitano, nonché quelle tra i diversi servizi,
+        sono mostrate in questa sezione, con l'ausilio di grafici, per rendere più chiare le relazioni tra le
+        componenti del sistema informatico dell'Avvocatura.
+        
+      </div>
+      <div class="sezioni_home">
+        <strong>Documentazione procedure di startup e shutdown dei sistemi</strong><br>
+                <img width=40% style="float: right" alt="logo" src="{% static "avvocatura/images/poweronHOST.png" %}">
+        In questa sezione sono illustrate le procedure per stoppare e far ripartire tutti i servizi e gli host dell'Avvocatura
+        nella corretta sequenza, in modo da evitare perdite di dati.
+    
+      </div>
+      <div class="sezioni_home">
+        <img width=40% style="float: right" alt="logo" src="{% static "avvocatura/images/dr.png" %}">
+        <strong>Documentazione procedure di Disaster Recovery</strong><br>
+        Procedure da intraprendere, in caso di Failure completo sul sito di produzione,
+        per il ripristino dei server sul sito di Recovery.
+        
+      </div>
+  </div>
+    <div class="col-md-5">
+       <div class="avv-content">
+        <div class="avv-login">
+          <form id="login_form" class="form-horizontal" method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name" class="col-sm-3 control-label">Utente</label>
+                <div class="col-sm-6">
+                    <input type="text" name="username" value=""  />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="name" class="col-sm-3 control-label">Password</label>
+                <div class="col-sm-6">
+                    <input type="password" name="password" value="" />
+                </div>
+            </div>
+            <div class="form-group">
+                
+                <div class="col-sm-2 col-sm-offset-3">
+                    <input type="submit" value="Login" />
+                </div>
+            </div>
+            <div>{% if message %}<p class="text-danger""><strong>{{ message }}</strong></p>{% endif %}</div>
+</form>
+</div>
+</div>
+    </div>
+  {% endblock %}

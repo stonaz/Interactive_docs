@@ -1,0 +1,40 @@
+{% extends "services/base.html" %}
+    
+      {% load static %}
+
+    
+{%block list%}
+   
+
+   <br>
+          <a href="{% url 'host_add'  %}">
+                <button type="submit" class="btn btn-sm btn-default">Aggiungi <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </button>
+          </a>  
+          
+   <div>
+   <br>
+       {% if host_list %}
+       
+   <table class="table table-condensed" style="width: 95%">
+      
+    {% for host in host_list %}
+    
+      <tr>
+       <td><strong>{{host.name}}</strong></td>
+         <td><a href="{% url 'host_detail' host.id %}"><button class="btn btn-sm ">Visualizza</button></a></td>
+        <td><a href="{% url 'host_update' host.id %}"><button class="btn btn-sm ">Modifica</button></a></td>
+        <td><a href="{% url 'host_delete' host.id %}"><button class="btn btn-sm eliminaHost">Elimina</button></a></td>
+
+      </tr>
+      
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No hosts are available.</p>
+{% endif %}
+    </div>
+  </div>
+       {%endblock list%}
+{% block content %}
+   
+  {% endblock %}

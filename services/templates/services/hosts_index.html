@@ -1,0 +1,32 @@
+{% extends "services/base.html" %}
+    
+      {% load static %}
+
+    {% block content %}
+    
+    
+    <div class="avv-sidebar">
+  <h3>Hosts</h3>
+       {% if host_list %}
+    <ul class="list-group">
+    {% for host in host_list %}
+        <li class="list-group-item"><a href="graph/{{ host.id }}/">{{ host.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No hosts are available.</p>
+{% endif %}
+    </div>
+  </div>
+  <div class="col-md-8">
+    
+    <div class="avv-content">
+        <p> Selezionare un host dalla lista per visualizzarne la descrizione</p>
+      
+    </div>
+    
+    
+  </div>
+</div>
+    </div>
+ {% endblock %}

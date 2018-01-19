@@ -1,0 +1,105 @@
+{% extends "services/base.html" %}
+    
+      {% load static %}
+      {% block col-left %}               
+  <div class="col-md-4 ">
+    {% endblock col-left%} 
+  
+    {% block content %}
+
+    <div class="avv-sidebar">
+    <h3>Servizi</h3>
+ 
+       {% if service_list %}
+    <ul class="list-group">
+    {% for s in service_list %}
+      {% if s.name == service.name %}
+      <li class="list-group-item"><a href="{% url 'service_detail' service.id %}"><span class="activeItem">{{ s.name }}</span></a></li>
+      {% else %}
+        <li class="list-group-item"><a href="{% url 'service_detail' s.id %}">{{ s.name }}</a></li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No services are available.</p>
+{% endif %}
+    </div>
+  </div>
+  <div class="col-md-8">
+    
+     <div class="avv-content">
+        <strong>Nome servizio: </strong>{{ service.name }}<br>
+        <strong>Host: </strong>
+        
+    {% if host.id == "not present" %}
+    {{ host.name }}
+    {% else %}
+    <a href="{% url 'host_detail' host.id %}">{{ host.name }}</a>
+    {% endif %}
+<br>
+        <strong>Tipologia servizio: </strong>{{ service.service_type }}<br>
+        <strong>Descrizione: </strong><br>
+        <textarea readonly rows="4" cols="60" class="formControl desc">{{ service.desc }}</textarea>
+        <br>
+       
+        <strong>Url documentazione: </strong><a href="{{ service.documentation_url }}">{{ service.documentation_url }}</a><br>
+        <strong>Port: </strong>{{ service.port }}<br>
+        <strong>User: </strong>{{ service.user }}<br>
+        <strong>Password: </strong><input type="password" id="password" value="{{ service.password }}" disabled>
+        <button id="viewPassword">Visualizza</button>
+        <button id="hidePassword" style="display:none">Nascondi</button>
+        <span id="passhprase_span" style="display:none">
+          <form action="javascript:void(0);" style=" display:inline!important;">
+          <strong>Inserisci passphrase: </strong>
+          <input type="password" id="passphrase" >
+          <button id="send_passphrase">OK</button>
+          </form>
+        </span>
+        
+        <br>
+        <strong>SVN: </strong>{{ service.svn }}<br>
+        {% if service.deploy_doc_type == "Codice" %}
+        <strong>Deploy: </strong><br><textarea readonly rows="4" class="formControl code">{{ service.deploy }}</textarea><br>
+{% elif service.deploy_doc_type == "Link" %}
+    <strong>Deploy: </strong><a href="{{ site_url}}{{ static_docs_dir }}/{{ service.deploy }}">{{ site_url}}{{ static_docs_dir }}/{{ service.deploy }}</a><br>
+{% else %}
+    <strong>Deploy: </strong>{{ service.deploy }}<br>
+{% endif %}
+
+        {% if service.start_doc_type == "Codice" %}
+        <strong>Start: </strong><br><textarea rows="4" class="formControl code">{{ service.start }}</textarea><br>
+{% elif service.start_doc_type == "Link" %}
+    <strong>Start: </strong><a href="{{ site_url}}{{ static_docs_dir }}/{{ service.start }}">{{ site_url}}{{ static_docs_dir }}/{{ service.start }}</a><br>
+{% else %}
+    <strong>Start: </strong>{{ service.start }}<br>
+{% endif %}
+
+        {% if service.stop_doc_type == "Codice" %}
+        <strong>Stop: </strong><br><textarea rows="4" class="formControl code">{{ service.stop }}</textarea><br>
+{% elif service.stop_doc_type == "Link" %}
+    <strong>Stop: </strong><a href="{{ site_url}}{{ static_docs_dir }}/{{ service.stop }}">{{ site_url}}{{ static_docs_dir }}/{{ service.stop }}</a><br>
+{% else %}
+    <strong>Stop: </strong>{{ service.stop }}<br>
+{% endif %}
+       
+<br>
+   
+    <div class="imageBox">
+                    <p>Servizi dipendenti da <strong>{{ service.name }}</strong>
+               <font size=-1>    (Se gli elementi nell'immagine sono poco leggibili clicca <a href="{% static  filename_big  %}">qui</a>) </font> 
+                    </p>
+
+       <img src="{% static  filename  %}" alt="My image"/> 
+    </div>
+        <div class="imageBox">
+            <p>Servizi da cui <strong>{{ service.name }}</strong> dipende
+                    (Se gli elementi nell'immagine sono poco leggibili clicca <a href="{% static  filename2_big  %}">qui</a>)
+            </p>
+            <img src="{% static  filename2  %}" alt="My image"/> 
+    </div>
+   
+  
+ </div>
+  </div>
+
+  {% endblock %}

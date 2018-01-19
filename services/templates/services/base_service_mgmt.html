@@ -1,0 +1,38 @@
+{% extends "services/base.html" %}
+    
+      {% load static %}
+
+    
+{%block list%}
+       <br>
+          <a href="{% url 'service_add'  %}">
+                <button type="submit" class="btn btn-sm btn-default">Aggiungi <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </button>
+          </a>  
+          
+   <div>
+   <br>
+   
+       {% if services_list %}
+     <table class="table white"  style="width: 95%">
+      
+    {% for service in services_list %}
+    
+      <tr>
+       <td><strong>{{service.name}}</strong></td>
+       <td><a href="{% url 'service_detail' service.id %}"><button class="btn btn-sm">Visualizza</button></a></td>
+        <td><a href="{% url 'service_update' service.id %}"><button class="btn btn-sm">Modifica</button></a></td>
+        <td><a href="{% url 'service_delete' service.id %}"><button class="btn btn-sm eliminaServizio">Elimina</button></a></td>
+
+      </tr>
+      
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No services are available.</p>
+{% endif %}
+</div>
+  </div>
+       {%endblock list%}
+{% block content %}
+   
+  {% endblock %}

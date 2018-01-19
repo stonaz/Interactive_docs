@@ -1,0 +1,226 @@
+{% extends "services/base.html" %}
+{% load static %}
+ {% block col-left %}               
+  <div class="col-md-12">
+    {% endblock col-left%}
+{% block menu %} 
+<h2> Sequenza di shutdown generale dei sistemi  </h2>
+Al fine di provvedere ad uno spegnimento ordinato dei sistemi &egrave necessario procedere obbligatoriamente con il seguente ordine.<br>
+Soprattutto è importante che lo spegnimento di <strong>Alfresco</strong>, <strong>Postgres</strong> e <strong>Oracle</strong> venga eseguito dopo tutti gli altri e nell'ordine indicato.
+<ol>
+	<li> <a href='#NSI'>Spegnimento Servers NSI</a>
+	<li> <a href='#JBOSS'>Spegnimento Addressbook (addressbook.ads.it )</a>
+	<li> <a href='#JBOSS'>Spegnimento Servizi Stampa NSI ( prasae.ads.it )</a>
+	<li> <a href='#JBOSS2'>Spegnimento Web services NSI ( nsi-ws.ads.it )</a>
+	<li> <a href='#JBOSS'>Spegnimento Extranet ( extranet.ads.it )</a>
+	<li> <a href='#Console-PEC'>Spegnimento Console-PEC ( console-pec.ads.it )</a>
+	<li> <a href='#JBOSS'>Spegnimento Scrivania ( scrivania.ads.it )</a>
+	<li> <a href='#MASSIVA'>Spegnimento Scansione Massiva ( massiva.ads.it )</a>
+	<li> <a href='#TOMCAT'>Spegnimento  Cas ( cas.ads.it )</a>
+	<li> <a href='#JBOSS'>Spegnimento Concorsi ( concorsi.ads.it )</a>
+	<li> <a href='#PDD'>Spegnimento PDD</a>
+	<li> <a href='#PDD-QUA'>Spegnimento PDD Qualificata</a>
+	<li> <a href='#Alfresco'>Spegnimento Alfresco</a>
+	<li> <a href='#Postgres'>Spegnimento Postgres</a>
+	<li> <a href='#Oracle'>Spegnimento Oracle</a>
+	<li> <a href='#NAS'>Spegnimento NAS</a>
+	<li> <a href='#Simplivity'>PowerOff Simplivity</a>
+</ol>
+<h2> <a name='NSI'>Spegnimento dei servers NSI</a> </h2>
+Per spegnere i server NSI procedere come segue, su ciascuno dei servers delle distrettuali, accedendo come utente nnsi :
+<p><code>
+	jboss stop
+	exit
+</code></p>
+Accedere come root e:
+<p><code>
+	halt -p<br>
+	exit<br>
+</code></p>
+<br>
+<h2> <a name='PDD'>Spegnimento PDD</a> </h2>
+
+Accedere al server <strong>avvjboss2-prod.ads.it</strong> come root
+<p><code>
+	/etc/init.d/jboss_default stop<br>
+	halt -p
+</code></p>
+Accedere al server <strong>avvjboss1-prod.ads.it</strong> come root
+<p><code>
+	/etc/init.d/jboss_default stop<br>
+	halt -p
+</code></p>
+<br>
+<h2> <a name='PDD-QUA'>Spegnimento PDD Qualificata</a> </h2>
+
+Accedere al server <strong>avvjboss2-qua.ads.it</strong> come root
+<p><code>
+	/etc/init.d/jboss_default stop<br>
+	/etc/init.d/postgresd stop<br>
+	halt -p
+</code></p>
+
+Accedere al server <strong>avvjboss1-qua.ads.it</strong> come root
+<p><code>
+	/etc/init.d/jboss_default stop<br>
+	halt -p
+</code></p>
+
+<br>
+<h2> <a name='Console-PEC'>Spegnimento Console-PEC</a> </h2>
+Accedere al server <strong>dbserver.ads.it</strong> come utente oracle
+<p><code>
+	cd /opt/oracle/scripts/avge10g/console-pec<br>
+	./disable.sh
+</code></p>
+Controllare che il file re-enable.sql sia stato creato ( deve essere l'ultimo della lista ed avere la data di creazione uguale alla data corrente)
+<p>
+<code>
+ls -ltr<br>
+-rwxr--r-- 1 oracle oinstall  99 Oct 29 16:15 disable.sh<br>
+-rwxr--r-- 1 oracle oinstall  45 Oct 29 16:15 enable.sh<br>
+-rw-r--r-- 1 oracle oinstall 370 Nov  2 12:36 disable.sql<br>
+-rw-r--r-- 1 oracle oinstall 154 Nov  2 12:36 enable.sql<br>
+-rw-r--r-- 1 oracle oinstall 304 Nov  2 12:44 re-enable.sql<br>
+</code>
+</p>
+
+Accedere al server <strong>console-PEC.ads.it</strong> come root
+<p><code>
+	service jboss stop<br>
+	halt -p
+</code></p>
+
+<br>
+<h2> <a name='JBOSS'>Spegnimento servers con Jboss installato come servizio</a> </h2>
+Procedura da usare sui servers:
+<ul>
+	<li> <strong>concorsi.ads.it</strong>
+	<li> <strong>scrivania.ads.it</strong>
+	<li> <strong>extranet.ads.it</strong>
+	<li> <strong>prasae.ads.it</strong>
+	<li><strong>addressbook.ads.it</strong>
+	
+</ul>
+Accedere al server come root
+<p><code>
+	service jboss stop<br>
+	halt -p
+</code></p>
+<br>
+<h2> <a name='JBOSS2'>Spegnimento servers Jboss/tomcat generici</a> </h2>
+Procedura da usare sui servers:
+<ul>
+	<li> <strong>nsi-ws.ads.it</strong>
+	<li> <strong>botero-1.ads.it</strong>
+	<li> <strong>botero-2.ads.it</strong>
+
+</ul>
+<p>
+Accedere al server come root
+<code>
+ps -ef | grep java</code>
+L'output del comando sarà simile alla figura seguente:<br>
+<img src="{% static "avvocatura/images/stopjboss.png" %}" width="720" height="272"><br><br>
+Prendere nota del process ID dei processi java ( il primo numero, nell'esempio	2993 e 2994 )<br>
+Fare kill dei processi rilevati. Nel nostro esempio i comandi da eseguire saranno:
+<code>
+kill 2993<br>kill 2994</code>
+Verificare che non ci siano più processi java in esecuzione, dando nuovamente il comando:<br>
+<code>
+ps -ef | grep java</code>
+Se nell'output restituito non ci sono processi java, spegnere il server con:<br>
+<code>
+	halt -p
+</code>
+<br>
+
+<h2> <a name='MASSIVA'>Spegnimento Scansione Massiva</a> </h2>
+Accedere al server <strong>massiva.ads.it</strong> come root
+<p><code>
+	touch /tmp/AcquisizioneMassiva.stop<br>
+	touch /tmp/AcquisizioneMassiva-fromScansione.stop<br>
+</code>
+Attendere che il comando <code>ps -eaf | grep java</code> torni soltanto il seguente output ( il PID del processo sarà ovviamente diverso)
+<code>root     29501 29467  0 12:16 pts/0    00:00:00 grep java</code>
+A quel punto cancellare i files di stop e lock dalla directory /tmp eseguendo:
+<code>rm -f /tmp/*.lock /tmp/*.stop</code>
+e spegnere il server con
+<code>halt -p</code>
+</p>
+<br>
+
+<h2> <a name='TOMCAT'>Spegnimento CAS</a> </h2>
+Accedere al server <strong>cas.ads.it</strong> come root
+<p><code>
+	service tomcat stop<br>
+	halt -p
+</code></p>
+<br>
+	
+<h2> <a name='Alfresco'>Spegnimento Alfresco</a> </h2>
+Accedere al server <strong>botero-2.ads.it</strong> come root ed esguire il kill dei processi java presenti, come descritto <a href='#JBOSS2'>precedentemente</a><br>
+Accedere al server <strong>botero-1.ads.it</strong> ed eseguire la stessa operazione
+
+<br>
+<br>
+<h2> <a name='Postgres'>Spegnimento Postgres</a> </h2>
+
+Accedere al server <strong>postgres.ads.it</strong> come utente root:
+<p><code>
+	service postgresql stop<br>
+	halt -p
+</code></p>
+
+<br>
+<h2> <a name='Oracle'>Spegnimento Oracle</a> </h2>
+Per spegnere Oracle procedere come segue:<br>
+1) Accedere al server <strong>dbserver.ads.it</strong> come utente oracle:
+<p><code>
+	sqlplus / as sysdba
+</code></p>
+Una volta acceduto al prompt di sqlplus digitare:
+<p><code>
+	shutdown immediate
+</code></p>
+Attendere il completamento dell'operazione ed uscire dal prompt digitando
+<p><code>
+	exit
+</code></p>
+A questo punto eseguire i comandi
+<p><code>
+	ORACLE_SID=alfresco<br>
+	sqlplus / as sysdba
+</code></p>
+E digitare nuovamente nel prompt di sqlplus:
+<p><code>
+	shutdown immediate
+</code></p>
+e successivamente uscire con
+<p><code>
+	exit
+</code></p>
+A questo punto le istanze dei 2 DB sono state chiuse ed è possibile spegnere il server con
+<p><code>
+	halt -p
+</code></p>
+2) Accedere al server <strong>dbserver-stdby.ads.it</strong> come utente oracle ed eseguire la stessa sequenza di operazioni descritta al punto precedente.<br>
+3) Accedere al server <strong>dbserver-repl-1.ads.it</strong> come utente oracle ed eseguire la stessa sequenza di operazioni descritta al punto 1, ma solo relativamente alle prime 3 operazioni<br>
+(l'istanza alfresco non è presente sul server di test)
+
+<br><br>
+<h2> <a name='NAS'>Spegnimento NAS</a> </h2>
+Spegnere il NAS
+<br><br>
+
+<h2> <a name='Simplivity'>Spegnimento Simplivity</a> </h2>
+Dal Virtual Center VMware eseguire lo shutdown di tutte le VM - <strong>escluse le 2 VM OmniCube</strong> - come indicato in figura.<br>
+Se il comando Shutdown restituisce un warning relativo ai Vmware tools mancanti, selezionare power off dal menu.<br>
+<img src="{% static "avvocatura/images/shutdownVM.png" %}" width="960" height="600"><br><br>
+Una volta spente tutte le VM, eseguire lo shutdown dei servers OmniCube<br>
+<img src="{% static "avvocatura/images/shutdownOC.png" %}" width="960" height="600"><br><br>
+A questo punto eseguire lo shutdown di <strong>simplivity1</strong> e <strong>simplivity2</strong><br>
+<img src="{% static "avvocatura/images/shutdownHOST.png" %}" width="960" height="600"><br><br>
+E' ora possbile spegnere il server <strong>vc55-simpl.ads.it</strong> sul quale gira il Vcenter VMware.
+
+{% endblock menu %} 
