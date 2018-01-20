@@ -33,24 +33,29 @@ def servizi_index(request):
 
 def drawDeps(deps_list,dep,node,graph,node_shape):
     #print deps_list
-    #print "Trovata dipendenza:" + dep
+    print "Trovata dipendenza:" + dep
     if len(node) >=  1:
         graph.add_node(node,shape=node_shape) # adds node 'a'
         e = graph.get_node(node)
+       # e.attr['URL'] = "http://ya.ru/"
         if node_shape == "box":
             e.attr['color']='green'
             e.attr['style']='filled'
     dep_object=get_or_none(Service,name=dep)
     if dep_object is not None:
+        print 'Service found, adding to graph '
         dep_name=dep_object.name
         dep_subdeps=dep_object.deps_to
         #print dep_name
         #print dep_subdeps
         graph.add_edge(dep_name,node)
+        d = graph.get_node(dep_name)
+        url = settings.SITE_URL + '/servizi/graph/' +  dep_object.id
+        d.attr['URL'] = url
         #print "Aggiunta relazione da " + node + " a " + dep_name
-        if dep not in deps_list:
-            #print "Dipendenza ancora da trattare"
-            DrawSubDeps(deps_list,dep_subdeps,dep,graph)
+        # if dep not in deps_list:
+        #     #print "Dipendenza ancora da trattare"
+        #     DrawSubDeps(deps_list,dep_subdeps,dep,graph)
     else:
         graph.add_edge(dep,node)
     deps_list.append(dep)
@@ -64,12 +69,18 @@ def DrawSubDeps(deps_list,subdeps,node,graph):
         drawDeps(deps_list,subdep,node,graph,'ellipse')
         
 def DrawDepsUp(dep,node,graph):
-    graph.add_node(dep) # adds node 'a'
-    graph.add_edge(node,dep)
-    e=graph.get_node(node)
-    e.attr['color']='green'
-    e.attr['shape']='box'
-    e.attr['style']='filled'
+    dep_object=get_or_none(Service,name=dep)
+    if dep_object is not None:
+        dep_name=dep_object.name
+        graph.add_node(dep) # adds node 'a'
+        d = graph.get_node(dep)
+        url = settings.SITE_URL + '/servizi/graph/' +  dep_object.id
+        d.attr['URL'] = url
+        graph.add_edge(node,dep)
+        e=graph.get_node(node)
+        e.attr['color']='green'
+        e.attr['shape']='box'
+        e.attr['style']='filled'
 
 @login_required
 def host_detail(request,id):
@@ -114,32 +125,41 @@ def service_detail(request,id):
     
     ts = str(time.time())
     
-    filename = 'services/static/services/graphics/' + node + '_deps_down.png'
-    context_filename = 'services/graphics/' + node + '_deps_down.png?dummy=' + ts
-    filename_big = 'services/static/services/graphics/' + node + '_deps_down_big.png'
-    context_filename_big = 'services/graphics/' + node + '_deps_down_big.png?dummy=' + ts
+    filename = 'services/static/services/graphics/' + node + '_deps_down.svg'
+    map_filename = 'services/static/services/graphics/' + node + '_deps_down.map'
+    context_filename = 'services/graphics/' + node + '_deps_down.svg?dummy=' + ts
+    filename_big = 'services/static/services/graphics/' + node + '_deps_down_big.svg'
+    context_filename_big = 'services/graphics/' + node + '_deps_down_big.svg?dummy=' + ts
     
-    filename2 = 'services/static/services/graphics/' + node + '_deps_up.png'
-    context_filename2 = 'services/graphics/' + node + '_deps_up.png?dummy=' + ts
-    filename2_big = 'services/static/services/graphics/' + node + '_deps_up_big.png'
-    context_filename2_big = 'services/graphics/' + node + '_deps_up_big.png?dummy=' + ts
+    filename2 = 'services/static/services/graphics/' + node + '_deps_up.svg'
+    map_filename2 = 'services/static/services/graphics/' + node + '_deps_up.map'
+    context_filename2 = 'services/graphics/' + node + '_deps_up.svg?dummy=' + ts
+    filename2_big = 'services/static/services/graphics/' + node + '_deps_up_big.svg'
+    context_filename2_big = 'services/graphics/' + node + '_deps_up_big.svg?dummy=' + ts
 
     if settings.DEBUG == False :
-        filename = settings.STATIC_ROOT + 'services/graphics/'+ node + '_deps_down.png'
-        filename2 = settings.STATIC_ROOT + 'services/graphics/'+ node + '_deps_up.png'
-        filename_big = settings.STATIC_ROOT + 'services/graphics/'+ node + '_deps_down_big.png'
-        filename2_big = settings.STATIC_ROOT + 'services/graphics/'+ node + '_deps_up_big.png'
+        filename = settings.STATIC_ROOT + 'services/graphics/'+ node + '_deps_down.svg'
+        filename2 = settings.STATIC_ROOT + 'services/graphics/'+ node + '_deps_up.svg'
+        filename_big = settings.STATIC_ROOT + 'services/graphics/'+ node + '_deps_down_big.svg'
+        filename2_big = settings.STATIC_ROOT + 'services/graphics/'+ node + '_deps_up_big.svg'
 
-    G=pgv.AGraph(strict=False,directed=True)
+    # DEPS TO
+    
+    G=pgv.AGraph(strict=False,directed=True,name='map_deps_down')
     G.graph_attr.update(size="8,8")
+    print deps_down
     for dep in deps_down:
         #print "LIST:"
         #print deps_list
         if len(dep) >=  1:
+            print 'Aggiungo diendenza : ' + dep
             drawDeps(deps_list,dep,node,G,'box')
     
     G.layout(prog='dot')
-    G.draw(filename)
+    G.draw(map_filename, format="cmapx")  
+    G.draw(filename,format="svg")
+    with open(map_filename, 'r') as myfile:
+        map_data_down=myfile.read()
     
     deps_list= []
     G_big = pgv.AGraph(strict=False,directed=True)
@@ -150,17 +170,22 @@ def service_detail(request,id):
             drawDeps(deps_list,dep,node,G_big,'box')
     G_big.graph_attr.update(size="12,12")
     G_big.layout(prog='dot')
-    G_big.draw(filename_big)
+    G_big.draw(filename_big,format="svg")
     
-    G2=pgv.AGraph(strict=False,directed=True)
+    # DEPS BY 
+    
+    G2=pgv.AGraph(strict=False,directed=True,name='map_deps_up')
     G2.graph_attr.update(size="8,8")
     for dep in deps_up:
-        print 'dep' + dep
+        print 'dep ' + dep
         if len(dep) >=  1:
             DrawDepsUp(dep,node,G2)
-    G2.layout(prog='dot')    
-    G2.draw(filename2)
-    
+    G2.layout(prog='dot')
+    G2.draw(map_filename2, format="cmapx")  
+    G2.draw(filename2,format="svg")
+    with open(map_filename2, 'r') as myfile2:
+        map_data_up=myfile2.read()
+        
     deps_list= []
     G2_big = pgv.AGraph(strict=False,directed=True)
     for dep in deps_up:
@@ -170,10 +195,10 @@ def service_detail(request,id):
             DrawDepsUp(dep,node,G2_big)
     G2_big.graph_attr.update(size="12,12")
     G2_big.layout(prog='dot')
-    G2_big.draw(filename2_big)
+    G2_big.draw(filename2_big,format="svg")
     menu_id='services'
     context = {'service_list': service_list,'filename':context_filename, 'filename2':context_filename2,
                'filename_big':context_filename_big, 'filename2_big':context_filename2_big,
                'service' : service, 'host':h,'menu': menu_id,'site_url':site_url,'static_docs_dir':static_docs_dir,
-               'passphrase': passphrase}  
+               'passphrase': passphrase,'map_data_down': map_data_down ,'map_data_up': map_data_up}  
     return render(request, 'services/show_service.html', context)

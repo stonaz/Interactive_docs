@@ -89,13 +89,15 @@
                <font size=-1>    (Se gli elementi nell'immagine sono poco leggibili clicca <a href="{% static  filename_big  %}">qui</a>) </font> 
                     </p>
 
-       <img src="{% static  filename  %}" alt="My image"/> 
+       <img src="{% static  filename  %}" alt="My image" usemap="#map_deps_down"/>
+   {% autoescape off %}    {{ map_data_down }} {% endautoescape %}
     </div>
         <div class="imageBox">
             <p>Servizi da cui <strong>{{ service.name }}</strong> dipende
                     (Se gli elementi nell'immagine sono poco leggibili clicca <a href="{% static  filename2_big  %}">qui</a>)
             </p>
-            <img src="{% static  filename2  %}" alt="My image"/> 
+            <img src="{% static  filename2  %}" alt="My image" usemap="#map_deps_up"/>
+            {% autoescape off %}    {{ map_data_up }} {% endautoescape %}
     </div>
    
   
