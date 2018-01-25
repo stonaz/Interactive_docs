@@ -43,7 +43,7 @@ def user_login(request):
             # Bad login details were provided. So we can't log the user in.
             print "Invalid login details: {0}, {1}".format(username, password)
             context = {'message':'Credenziali non valide'}
-            return render(request,'avvocatura/login.html', context)
+            return render(request,'services/login.html', context)
             #return HttpResponse("Invalid login details supplied.")
 
     # The request is not a HTTP POST, so display the login form.
